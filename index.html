@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LUMIÈRE KTV｜頂級豪華歡唱空間</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Noto+Serif+TC:wght@300;400;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #c9a96e;
+      --gold-light: #e8d5a3;
+      --gold-dark: #8b6914;
+      --neon-pink: #ff2d78;
+      --neon-cyan: #00f5e9;
+      --neon-purple: #b44fff;
+      --bg-deep: #060608;
+      --bg-card: #0e0e14;
+      --bg-card2: #13131c;
+      --text-main: #f0e8d8;
+      --text-muted: #888;
+      --border: rgba(201,169,110,0.18);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: var(--bg-deep);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 3px; }
+
+    /* ── Particles bg ── */
+    #particles {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse at 20% 30%, rgba(180,79,255,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 70%, rgba(255,45,120,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 50%, rgba(0,245,233,0.04) 0%, transparent 70%);
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px;
+      height: 72px;
+      background: rgba(6,6,8,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      letter-spacing: 6px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .nav-logo span {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      letter-spacing: 4px;
+      display: block;
+      background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-top: -4px;
+    }
+
+    .nav-links {
+      display: flex; gap: 36px; list-style: none;
+    }
+
+    .nav-links li a {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 3px;
+      color: var(--text-muted);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.3s;
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    .nav-links li a::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: linear-gradient(90deg, var(--gold), var(--neon-pink));
+      transition: width 0.4s ease;
+    }
+
+    .nav-links li a:hover,
+    .nav-links li a.active {
+      color: var(--gold-light);
+    }
+
+    .nav-links li a:hover::after,
+    .nav-links li a.active::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 3px;
+      font-size: 14px;
+      padding: 10px 28px;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: opacity 0.3s, transform 0.2s;
+    }
+
+    .nav-cta:hover { opacity: 0.85; transform: scale(1.04); }
+
+    /* Hamburger */
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      width: 26px; height: 2px;
+      background: var(--gold);
+      transition: all 0.3s;
+    }
+
+    /* Mobile menu */
+    .mobile-menu {
+      position: fixed; top: 72px; left: 0; right: 0;
+      background: rgba(6,6,8,0.97);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      z-index: 99;
+      padding: 24px 0;
+      display: flex; flex-direction: column; align-items: center; gap: 24px;
+    }
+
+    .mobile-menu a {
+      font-size: 15px; letter-spacing: 4px;
+      color: var(--text-muted);
+      text-decoration: none; cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .mobile-menu a:hover,
+    .mobile-menu a.active { color: var(--gold-light); }
+
+    /* ── Page wrapper ── */
+    #app { position: relative; z-index: 1; }
+
+    .page {
+      min-height: 100vh;
+      padding-top: 72px;
+      animation: fadeIn 0.6s ease both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Section title ── */
+    .section-tag {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      letter-spacing: 6px;
+      color: var(--neon-pink);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(38px, 6vw, 72px);
+      letter-spacing: 6px;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light) 50%, var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      max-width: 500px;
+    }
+
+    .divider {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      margin: 20px 0;
+    }
+
+    /* ── HOME ── */
+    .hero {
+      position: relative;
+      height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(6,6,8,0.3) 0%, rgba(6,6,8,0.7) 60%, var(--bg-deep) 100%),
+        url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1600&q=80') center/cover no-repeat;
+    }
+
+    .hero-glow {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse at 50% 60%, rgba(255,45,120,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse at 30% 40%, rgba(180,79,255,0.12) 0%, transparent 45%);
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center; padding: 0 24px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 12px;
+      letter-spacing: 8px;
+      color: var(--gold);
+      border: 1px solid var(--border);
+      padding: 8px 24px;
+      margin-bottom: 32px;
+      animation: fadeIn 1s 0.2s both;
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(64px, 12vw, 140px);
+      letter-spacing: 10px;
+      line-height: 0.95;
+      animation: fadeIn 1s 0.4s both;
+    }
+
+    .hero-title .line1 {
+      background: linear-gradient(135deg, #fff 0%, var(--gold-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-title .line2 {
+      background: linear-gradient(135deg, var(--neon-pink) 0%, var(--neon-purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 0.6em;
+      letter-spacing: 18px;
+      display: block;
+      margin-top: 8px;
+    }
+
+    .hero-desc {
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 3px;
+      color: rgba(240,232,216,0.65);
+      margin: 28px 0 44px;
+      animation: fadeIn 1s 0.6s both;
+    }
+
+    .btn-primary {
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 5px;
+      font-size: 16px;
+      padding: 16px 52px;
+      background: transparent;
+      color: var(--gold-light);
+      border: 1px solid var(--gold);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: color 0.4s;
+      animation: fadeIn 1s 0.8s both;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+      z-index: -1;
+    }
+
+    .btn-primary:hover::before { transform: translateX(0); }
+    .btn-primary:hover { color: #fff; border-color: transparent; }
+
+    .hero-scroll {
+      position: absolute; bottom: 36px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      font-size: 10px; letter-spacing: 4px; color: var(--text-muted);
+      animation: bounce 2s infinite;
+    }
+
+    .hero-scroll::after {
+      content: '';
+      width: 1px; height: 48px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* Features strip */
+    .features-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .feature-item {
+      padding: 32px 28px;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .feature-item:last-child { border-right: none; }
+
+    .feature-icon {
+      font-size: 28px; margin-bottom: 12px;
+    }
+
+    .feature-item h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 3px; font-size: 15px;
+      color: var(--gold-light); margin-bottom: 6px;
+    }
+
+    .feature-item p {
+      font-size: 12px; color: var(--text-muted); letter-spacing: 1px; line-height: 1.6;
+    }
+
+    .home-about {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      min-height: 540px;
+    }
+
+    .about-img {
+      background: url('https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=900&q=80') center/cover;
+      position: relative;
+    }
+
+    .about-img::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent 60%, var(--bg-deep) 100%);
+    }
+
+    .about-text {
+      padding: 80px 64px;
+      display: flex; flex-direction: column; justify-content: center;
+      background: var(--bg-card);
+    }
+
+    .about-text p {
+      font-size: 14px; line-height: 2; color: rgba(240,232,216,0.7);
+      margin-bottom: 16px;
+    }
+
+    .stat-row {
+      display: flex; gap: 48px; margin-top: 32px;
+    }
+
+    .stat-item h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 42px; letter-spacing: 2px;
+      background: linear-gradient(135deg, var(--gold), var(--neon-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-item p { font-size: 11px; letter-spacing: 3px; color: var(--text-muted); }
+
+    /* ── NEWS ── */
+    .page-hero {
+      padding: 80px 64px 60px;
+      background: linear-gradient(180deg, rgba(255,45,120,0.06) 0%, transparent 100%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      margin: 0;
+    }
+
+    .news-card {
+      background: var(--bg-card);
+      padding: 0;
+      overflow: hidden;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+
+    .news-card:hover { background: var(--bg-card2); }
+
+    .news-card-img {
+      height: 200px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .news-badge {
+      position: absolute; top: 16px; left: 16px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 11px; letter-spacing: 3px;
+      padding: 6px 14px;
+      background: var(--neon-pink);
+      color: #fff;
+    }
+
+    .news-card-body { padding: 28px; }
+
+    .news-date {
+      font-size: 11px; letter-spacing: 3px;
+      color: var(--gold); margin-bottom: 10px;
+    }
+
+    .news-card-body h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px; font-weight: 600;
+      line-height: 1.4; margin-bottom: 12px;
+      color: var(--text-main);
+    }
+
+    .news-card-body p {
+      font-size: 13px; line-height: 1.8;
+      color: var(--text-muted);
+    }
+
+    .news-more {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 16px;
+      font-size: 11px; letter-spacing: 3px;
+      color: var(--gold);
+      cursor: pointer;
+    }
+
+    /* ── ROOMS ── */
+    .rooms-list { padding: 0 64px 80px; }
+
+    .room-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 400px;
+      margin-bottom: 2px;
+      overflow: hidden;
+      transition: transform 0.4s;
+    }
+
+    .room-card:hover { transform: scale(1.005); }
+
+    .room-card.reverse { direction: rtl; }
+    .room-card.reverse > * { direction: ltr; }
+
+    .room-img {
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .room-img::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(180,79,255,0.15), rgba(255,45,120,0.1));
+    }
+
+    .room-info {
+      padding: 60px 56px;
+      background: var(--bg-card);
+      display: flex; flex-direction: column; justify-content: center;
+    }
+
+    .room-tag {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 11px; letter-spacing: 5px;
+      color: var(--neon-cyan); margin-bottom: 12px;
+    }
+
+    .room-info h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px; font-weight: 700;
+      line-height: 1.2; margin-bottom: 8px;
+    }
+
+    .room-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px; letter-spacing: 2px;
+      color: var(--gold); margin-bottom: 20px;
+    }
+
+    .room-price span { font-size: 14px; color: var(--text-muted); letter-spacing: 1px; }
+
+    .room-info p {
+      font-size: 13px; line-height: 1.9;
+      color: rgba(240,232,216,0.65);
+      margin-bottom: 24px;
+    }
+
+    .room-features {
+      display: flex; flex-wrap: wrap; gap: 10px;
+    }
+
+    .room-feature {
+      font-size: 11px; letter-spacing: 2px;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    /* ── DINING ── */
+    .dining-header { padding: 80px 64px 60px; }
+
+    .menu-section { padding: 0 64px 80px; }
+
+    .menu-category {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 6px;
+      color: var(--neon-pink);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2px;
+      margin-bottom: 56px;
+    }
+
+    .menu-card {
+      background: var(--bg-card);
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+
+    .menu-card:hover { background: var(--bg-card2); }
+
+    .menu-card-img {
+      height: 200px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .menu-card-info { padding: 24px; }
+
+    .menu-card-info h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px; font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .menu-card-info p {
+      font-size: 12px; line-height: 1.8;
+      color: var(--text-muted); margin-bottom: 14px;
+    }
+
+    .menu-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px; letter-spacing: 2px;
+      color: var(--gold);
+    }
+
+    /* ── CONTACT ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - 72px);
+    }
+
+    .contact-left {
+      padding: 80px 64px;
+      background: var(--bg-card);
+      border-right: 1px solid var(--border);
+    }
+
+    .contact-info-block {
+      margin-top: 40px;
+    }
+
+    .contact-item {
+      display: flex; gap: 20px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .contact-item-icon {
+      font-size: 20px; margin-top: 2px; min-width: 28px;
+    }
+
+    .contact-item h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 4px;
+      color: var(--gold); margin-bottom: 6px;
+    }
+
+    .contact-item p {
+      font-size: 13px; line-height: 1.8;
+      color: rgba(240,232,216,0.65);
+    }
+
+    .contact-right {
+      padding: 80px 64px;
+    }
+
+    .form-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px; letter-spacing: 6px;
+      color: var(--gold-light); margin-bottom: 36px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 10px; letter-spacing: 3px;
+      color: var(--text-muted); margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 14px 16px;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.3s;
+      -webkit-appearance: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--gold);
+    }
+
+    .form-group textarea { height: 120px; resize: none; }
+
+    .form-group select option { background: var(--bg-card2); }
+
+    .btn-submit {
+      width: 100%;
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 6px; font-size: 16px;
+      padding: 18px;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      color: var(--bg-deep);
+      border: none; cursor: pointer;
+      transition: opacity 0.3s, transform 0.2s;
+      margin-top: 8px;
+    }
+
+    .btn-submit:hover { opacity: 0.88; transform: translateY(-2px); }
+
+    .success-msg {
+      background: rgba(0,245,233,0.06);
+      border: 1px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 16px 24px;
+      font-size: 13px; letter-spacing: 2px;
+      margin-top: 16px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px 64px;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--bg-card);
+    }
+
+    footer p {
+      font-size: 11px; letter-spacing: 3px;
+      color: var(--text-muted);
+    }
+
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px; letter-spacing: 6px;
+      color: var(--gold);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .home-about { grid-template-columns: 1fr; }
+      .about-img { height: 300px; }
+      .about-img::after { background: linear-gradient(180deg, transparent 60%, var(--bg-deep) 100%); }
+      .about-text { padding: 48px 40px; }
+      .room-card { grid-template-columns: 1fr; }
+      .room-card.reverse { direction: ltr; }
+      .room-img { height: 280px; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .contact-left { border-right: none; border-bottom: 1px solid var(--border); }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .hamburger { display: flex; }
+
+      .features-strip { grid-template-columns: repeat(2, 1fr); }
+      .feature-item:nth-child(2) { border-right: none; }
+      .feature-item:nth-child(3) { border-top: 1px solid var(--border); }
+      .feature-item:nth-child(4) { border-top: 1px solid var(--border); border-right: none; }
+
+      .news-grid { grid-template-columns: 1fr; }
+
+      .page-hero,
+      .rooms-list,
+      .dining-header,
+      .menu-section,
+      .contact-left,
+      .contact-right { padding-left: 24px; padding-right: 24px; }
+
+      .room-info { padding: 40px 24px; }
+
+      .form-row { grid-template-columns: 1fr; }
+
+      footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles"></div>
+
+  <div id="app">
+    <!-- NAVBAR -->
+    <nav>
+      <div class="nav-logo" @click="goPage('home')">
+        LUMIÈRE
+        <span>PREMIUM KTV</span>
+      </div>
+
+      <ul class="nav-links">
+        <li><a :class="{active: currentPage==='home'}" @click="goPage('home')">首頁</a></li>
+        <li><a :class="{active: currentPage==='news'}" @click="goPage('news')">活動消息</a></li>
+        <li><a :class="{active: currentPage==='rooms'}" @click="goPage('rooms')">包廂介紹</a></li>
+        <li><a :class="{active: currentPage==='dining'}" @click="goPage('dining')">美味餐點</a></li>
+        <li><a :class="{active: currentPage==='contact'}" @click="goPage('contact')">聯絡我們</a></li>
+      </ul>
+
+      <button class="nav-cta" @click="goPage('contact')">立即預約</button>
+
+      <div class="hamburger" @click="menuOpen = !menuOpen">
+        <span></span><span></span><span></span>
+      </div>
+    </nav>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" v-if="menuOpen">
+      <a :class="{active: currentPage==='home'}" @click="goPage('home')">首頁</a>
+      <a :class="{active: currentPage==='news'}" @click="goPage('news')">活動消息</a>
+      <a :class="{active: currentPage==='rooms'}" @click="goPage('rooms')">包廂介紹</a>
+      <a :class="{active: currentPage==='dining'}" @click="goPage('dining')">美味餐點</a>
+      <a :class="{active: currentPage==='contact'}" @click="goPage('contact')">聯絡我們</a>
+    </div>
+
+    <!-- ══ HOME ══ -->
+    <div class="page" v-if="currentPage === 'home'" :key="'home'">
+      <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-glow"></div>
+        <div class="hero-content">
+          <div class="hero-badge">✦ SINCE 2008 · TAIPEI · LUXURY KTV ✦</div>
+          <div class="hero-title">
+            <span class="line1">LUMIÈRE</span>
+            <span class="line2">頂級豪華歡唱殿堂</span>
+          </div>
+          <p class="hero-desc">燈光，音樂，傳說——每一晚都是你的舞台</p>
+          <button class="btn-primary" @click="goPage('contact')">立即預約包廂</button>
+        </div>
+        <div class="hero-scroll">SCROLL</div>
+      </section>
+
+      <div class="features-strip">
+        <div class="feature-item">
+          <div class="feature-icon">🎤</div>
+          <h4>頂規音響</h4>
+          <p>JBL 旗艦音響系統<br>每間獨立調音</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">👑</div>
+          <h4>皇室服務</h4>
+          <p>專屬管家一對一<br>貼心服務零等待</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🍾</div>
+          <h4>頂級酒水</h4>
+          <p>100+ 種精選洋酒<br>調酒師現場調製</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🌟</div>
+          <h4>霓虹派對</h4>
+          <p>LED 炫彩氛圍燈<br>打造專屬派對感</p>
+        </div>
+      </div>
+
+      <div class="home-about">
+        <div class="about-img"></div>
+        <div class="about-text">
+          <div class="section-tag">✦ OUR STORY</div>
+          <div class="section-title">不只是<br>KTV</div>
+          <div class="divider"></div>
+          <p>LUMIÈRE 自 2008 年創立以來，始終以「超越期待」為核心理念。我們相信，每一個夜晚都值得被完美詮釋。</p>
+          <p>從進門的瞬間，到最後一首歌的餘音，我們為您打造一段無可取代的感官饗宴——奢華的空間設計、頂規的音響設備、以及讓您賓至如歸的管家服務。</p>
+          <div class="stat-row">
+            <div class="stat-item">
+              <h3>15+</h3>
+              <p>年品牌歷程</p>
+            </div>
+            <div class="stat-item">
+              <h3>30+</h3>
+              <p>豪華包廂</p>
+            </div>
+            <div class="stat-item">
+              <h3>98%</h3>
+              <p>賓客滿意度</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>© 2025 LUMIÈRE KTV. All rights reserved.</p>
+        <div class="footer-logo">LUMIÈRE</div>
+        <p>台北市信義區光輝路 88 號</p>
+      </footer>
+    </div>
+
+    <!-- ══ NEWS ══ -->
+    <div class="page" v-else-if="currentPage === 'news'" :key="'news'">
+      <div class="page-hero">
+        <div class="section-tag">✦ LATEST EVENTS</div>
+        <div class="section-title">活動消息</div>
+        <div class="divider"></div>
+        <p class="section-sub">最新優惠與限定活動，精彩不容錯過</p>
+      </div>
+
+      <div class="news-grid">
+        <div class="news-card" v-for="item in newsItems" :key="item.id">
+          <div class="news-card-img" :style="{backgroundImage: 'url('+item.img+')'}">
+            <div class="news-badge">{{ item.badge }}</div>
+          </div>
+          <div class="news-card-body">
+            <div class="news-date">{{ item.date }}</div>
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.desc }}</p>
+            <div class="news-more">了解更多 →</div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>© 2025 LUMIÈRE KTV. All rights reserved.</p>
+        <div class="footer-logo">LUMIÈRE</div>
+        <p>台北市信義區光輝路 88 號</p>
+      </footer>
+    </div>
+
+    <!-- ══ ROOMS ══ -->
+    <div class="page" v-else-if="currentPage === 'rooms'" :key="'rooms'">
+      <div class="page-hero">
+        <div class="section-tag">✦ PRIVATE ROOMS</div>
+        <div class="section-title">包廂介紹</div>
+        <div class="divider"></div>
+        <p class="section-sub">三種等級，滿足從歡聚派對到頂奢商務的各種需求</p>
+      </div>
+
+      <div class="rooms-list">
+        <div v-for="(room, idx) in rooms" :key="room.id"
+          class="room-card" :class="{reverse: idx%2===1}">
+          <div class="room-img" :style="{backgroundImage: 'url('+room.img+')'}"></div>
+          <div class="room-info">
+            <div class="room-tag">{{ room.tag }}</div>
+            <h2>{{ room.name }}</h2>
+            <div class="room-price">NT$ {{ room.price }} <span>/ 小時起</span></div>
+            <p>{{ room.desc }}</p>
+            <div class="room-features">
+              <div class="room-feature" v-for="f in room.features" :key="f">{{ f }}</div>
+            </div>
+            <br>
+            <button class="btn-primary" style="margin-top:12px" @click="goPage('contact')">預約此包廂</button>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>© 2025 LUMIÈRE KTV. All rights reserved.</p>
+        <div class="footer-logo">LUMIÈRE</div>
+        <p>台北市信義區光輝路 88 號</p>
+      </footer>
+    </div>
+
+    <!-- ══ DINING ══ -->
+    <div class="page" v-else-if="currentPage === 'dining'" :key="'dining'">
+      <div class="dining-header">
+        <div class="section-tag">✦ GOURMET DINING</div>
+        <div class="section-title">美味餐點</div>
+        <div class="divider"></div>
+        <p class="section-sub">由米其林主廚掌刀，為您的每個夜晚增添最美妙的味覺旅程</p>
+      </div>
+
+      <div class="menu-section">
+        <div v-for="cat in diningCategories" :key="cat.name">
+          <div class="menu-category">{{ cat.emoji }} {{ cat.name }}</div>
+          <div class="menu-grid">
+            <div class="menu-card" v-for="item in cat.items" :key="item.name">
+              <div class="menu-card-img" :style="{backgroundImage: 'url('+item.img+')'}"></div>
+              <div class="menu-card-info">
+                <h4>{{ item.name }}</h4>
+                <p>{{ item.desc }}</p>
+                <div class="menu-price">NT$ {{ item.price }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>© 2025 LUMIÈRE KTV. All rights reserved.</p>
+        <div class="footer-logo">LUMIÈRE</div>
+        <p>台北市信義區光輝路 88 號</p>
+      </footer>
+    </div>
+
+    <!-- ══ CONTACT ══ -->
+    <div class="page" v-else-if="currentPage === 'contact'" :key="'contact'">
+      <div class="contact-grid">
+        <div class="contact-left">
+          <div class="section-tag">✦ GET IN TOUCH</div>
+          <div class="section-title">聯絡<br>我們</div>
+          <div class="divider"></div>
+
+          <div class="contact-info-block">
+            <div class="contact-item">
+              <div class="contact-item-icon">📍</div>
+              <div>
+                <h4>旗艦店地址</h4>
+                <p>台北市信義區光輝路 88 號 B2<br>（近台北 101 / 信義安和捷運站）</p>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-item-icon">📞</div>
+              <div>
+                <h4>訂位專線</h4>
+                <p>(02) 2788-8888<br>每日 14:00 – 04:00</p>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-item-icon">✉️</div>
+              <div>
+                <h4>電子信箱</h4>
+                <p>reservation@lumiere-ktv.tw<br>我們將於 24 小時內回覆</p>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-item-icon">🕐</div>
+              <div>
+                <h4>營業時間</h4>
+                <p>週一至週四：14:00 – 02:00<br>週五至週日：14:00 – 04:00</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-right">
+          <div class="form-title">線上預約</div>
+
+          <div v-if="formSent" class="success-msg">
+            ✦ 預約已送出！我們將於 24 小時內與您確認。感謝您選擇 LUMIÈRE。
+          </div>
+
+          <div v-else>
+            <div class="form-row">
+              <div class="form-group">
+                <label>姓名 *</label>
+                <input type="text" v-model="form.name" placeholder="您的姓名" />
+              </div>
+              <div class="form-group">
+                <label>聯絡電話 *</label>
+                <input type="tel" v-model="form.phone" placeholder="09xx-xxx-xxx" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>電子信箱</label>
+              <input type="email" v-model="form.email" placeholder="your@email.com" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>預約日期 *</label>
+                <input type="date" v-model="form.date" />
+              </div>
+              <div class="form-group">
+                <label>預約時段 *</label>
+                <select v-model="form.time">
+                  <option value="">請選擇</option>
+                  <option>14:00 – 18:00</option>
+                  <option>18:00 – 22:00</option>
+                  <option>22:00 – 02:00</option>
+                  <option>00:00 – 04:00（深夜場）</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>包廂類型</label>
+                <select v-model="form.room">
+                  <option value="">請選擇</option>
+                  <option>標準派對房（4–8 人）</option>
+                  <option>豪華大包廂（10–20 人）</option>
+                  <option>總統尊榮旗艦房（25–50 人）</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>人數</label>
+                <input type="number" v-model="form.guests" placeholder="預計人數" min="1" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>備注 / 特殊需求</label>
+              <textarea v-model="form.notes" placeholder="壽星優惠、特殊佈置、餐點需求..."></textarea>
+            </div>
+
+            <button class="btn-submit" @click="submitForm">確認送出預約</button>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>© 2025 LUMIÈRE KTV. All rights reserved.</p>
+        <div class="footer-logo">LUMIÈRE</div>
+        <p>台北市信義區光輝路 88 號</p>
+      </footer>
+    </div>
+  </div><!-- #app -->
+
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          currentPage: 'home',
+          menuOpen: false,
+          formSent: false,
+          form: {
+            name: '', phone: '', email: '',
+            date: '', time: '', room: '', guests: '', notes: ''
+          },
+
+          newsItems: [
+            {
+              id: 1, badge: '本月限定',
+              date: '2025 · 07 · 01',
+              title: '🎂 當月壽星超值禮遇',
+              desc: '生日當月憑證件享包廂費 8 折，贈精緻生日蛋糕乙份及氣球佈置服務，讓您的生日派對更閃耀！',
+              img: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&q=70'
+            },
+            {
+              id: 2, badge: '早鳥優惠',
+              date: '2025 · 07 · 01',
+              title: '🌅 早鳥歡唱 5 折特惠',
+              desc: '每日 14:00 – 18:00 平日早場，包廂費直打五折！帶著朋友搶佔最優惠時段，暢快歡唱不傷荷包。',
+              img: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=70'
+            },
+            {
+              id: 3, badge: '深夜限定',
+              date: '2025 · 07 · 05',
+              title: '🌙 深夜歡唱豪華包套',
+              desc: '午夜 00:00 場次起，包廂費 + 精選酒水套餐 + 小點拼盤，一次全包，盡情狂歡到天亮！',
+              img: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&q=70'
+            },
+            {
+              id: 4, badge: '企業方案',
+              date: '2025 · 07 · 10',
+              title: '💼 企業尾牙包場專案',
+              desc: '10 人以上團體訂位，享專屬會場佈置、餐點訂製服務及專責活動顧問，打造完美公司聚會。',
+              img: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=600&q=70'
+            },
+            {
+              id: 5, badge: '新品上市',
+              date: '2025 · 07 · 15',
+              title: '🎵 全新曲庫 50 萬首上線',
+              desc: '最新 J-POP、K-POP、台語金曲全面收錄，連日本最新 Oricon 榜單也同步更新，神曲一首不漏！',
+              img: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&q=70'
+            },
+            {
+              id: 6, badge: '會員回饋',
+              date: '2025 · 07 · 20',
+              title: '💎 鑽石會員積點加倍月',
+              desc: '7 月整月，所有消費積點 ×2 倍！快速累積點數兌換免費包廂時數、美食券與限定精品禮品。',
+              img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=70'
+            },
+          ],
+
+          rooms: [
+            {
+              id: 1,
+              tag: 'ROOM TYPE 01',
+              name: '標準派對房',
+              price: '1,800',
+              desc: '專為 4–8 人的歡聚派對設計。全新升級的 JBL 環繞音響，65 吋 OLED 螢幕，配備迷你吧台與專屬燈光秀系統，讓每首歌都充滿舞台魅力。',
+              features: ['容納 4–8 人', 'JBL 環繞音響', '65" OLED 螢幕', 'LED 炫彩燈光', '迷你吧台'],
+              img: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=70'
+            },
+            {
+              id: 2,
+              tag: 'ROOM TYPE 02',
+              name: '豪華大包廂',
+              price: '4,500',
+              desc: '適合 10–20 人的盛大聚會。擁有獨立舞池、全牆 LED 顯示系統與 Dolby Atmos 頂級音響，再加上私人調酒師服務，宛如置身頂級夜店。',
+              features: ['容納 10–20 人', 'Dolby Atmos', '全牆 LED', '獨立舞池', '私人調酒師', '豪華沙發區'],
+              img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&q=70'
+            },
+            {
+              id: 3,
+              tag: 'ROOM TYPE 03',
+              name: '總統尊榮旗艦房',
+              price: '12,000',
+              desc: '台北最奢華的 KTV 體驗，可容納多達 50 位貴賓。360° 環景舞台、義大利頂級皮革沙發、私人管家全程服務，以及專屬停車位，尊榮無可超越。',
+              features: ['容納 25–50 人', '360° 環景舞台', '義大利皮革沙發', '私人管家', '專屬停車位', 'VIP 紅地毯迎賓'],
+              img: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=800&q=70'
+            },
+          ],
+
+          diningCategories: [
+            {
+              name: '主廚推薦料理', emoji: '🍽️',
+              items: [
+                {
+                  name: '招牌紅燒牛肉麵',
+                  desc: '以台灣黃牛肋條慢燉 8 小時，湯頭濃郁回甘，配上特製辣油，每一口都是層次。',
+                  price: '380',
+                  img: 'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=500&q=70'
+                },
+                {
+                  name: '酥炸黃金拼盤',
+                  desc: '精選炸物：薄鹽蝦餅、起司薯條、花枝圈與雞翅，酥脆金黃，搭配四種特調醬料。',
+                  price: '520',
+                  img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=70'
+                },
+                {
+                  name: '黑松露和牛披薩',
+                  desc: '義大利薄脆餅皮，鋪上日本 A5 和牛薄片、義大利黑松露與莫扎瑞拉起司，奢華極致。',
+                  price: '980',
+                  img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=70'
+                },
+              ]
+            },
+            {
+              name: '精選飲品 & 調酒', emoji: '🍸',
+              items: [
+                {
+                  name: '霓虹星河調酒',
+                  desc: '以伏特加為基底，混合藍柑橘利口酒與炭酸水，呈現絕美漸層色澤，入口清新微甜。',
+                  price: '280',
+                  img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=500&q=70'
+                },
+                {
+                  name: '頂級香檳塔（6 杯）',
+                  desc: '精選法國 Moët & Chandon 香檳，慶祝場合最佳選擇，璀璨泡泡為夜晚點燃序幕。',
+                  price: '2,800',
+                  img: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=500&q=70'
+                },
+                {
+                  name: '台灣精品高山茶組',
+                  desc: '嚴選梨山烏龍茶與東方美人茶，不嗜酒者的頂級享受，搭配精緻茶點一份。',
+                  price: '680',
+                  img: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&q=70'
+                },
+              ]
+            },
+          ],
+        };
+      },
+
+      methods: {
+        goPage(page) {
+          this.currentPage = page;
+          this.menuOpen = false;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        submitForm() {
+          if (!this.form.name || !this.form.phone || !this.form.date || !this.form.time) {
+            alert('請填寫必填欄位（姓名、電話、日期、時段）');
+            return;
+          }
+          this.formSent = true;
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
